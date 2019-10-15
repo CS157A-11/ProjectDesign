@@ -15,86 +15,66 @@
 -- DROP TABLE IF EXISTS users_todos;
 
 CREATE TABLE users (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    user_name VARCHAR(255) NOT NULL PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    email VARCHAR(255)
 );
 CREATE TABLE todos (
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    name VARCHAR(255),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    name VARCHAR(255) NOT NULL,
+    is_active Boolean NOT NULL
 );
 CREATE TABLE habits (
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    name VARCHAR(255),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    name VARCHAR(255) NOT NULL,
+    is_active Boolean NOT NULL
 );
-CREATE TABLE completedhabits (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+CREATE TABLE users_completes_habits (
     habit_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (habit_id) REFERENCES habits(id)
+    user_name VARCHAR(255) NOT NULL,
+    completed_date Date NOT NULL,
+    FOREIGN KEY (habit_id) REFERENCES habits(id),
+    FOREIGN KEY (user_name) REFERENCES users(user_name),
+    PRIMARY KEY (habit_id, user_name, completed_date)
+
 );
-CREATE TABLE completedtodos (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+CREATE TABLE users_completes_todos (
     todo_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (todo_id) REFERENCES todos(id)
-);
-CREATE TABLE users_completedhabits (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    user_id INT NOT NULL,
-    completedhabit_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (completedhabit_id) REFERENCES completedhabits(id)
-);
-CREATE TABLE users_completedtodos (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    user_id INT NOT NULL,
-    completedtodo_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (completedtodo_id) REFERENCES completedtodos(id)
+    user_name VARCHAR(255) NOT NULL,
+    completed_date Date NOT NULL ,
+    FOREIGN KEY (todo_id) REFERENCES todos(id),
+    PRIMARY KEY (todo_id, user_name, completed_date)
 );
 CREATE TABLE moods (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    mood_name INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    name VARCHAR(255) NOT NULL PRIMARY KEY,
+    weight INT NOT NULL
 );
+CREATE TABLE moods_of_the_day (
+    mood_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    date Date NOT NULL,
+    mood_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (mood_name) REFERENCES moods(name)
+);
+
 CREATE TABLE users_moods (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     mood_id INT NOT NULL,
-    user_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (mood_id) REFERENCES moods(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    user_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (mood_id) REFERENCES moods_of_the_day(mood_id),
+    FOREIGN KEY (user_name) REFERENCES users(user_name),
+    PRIMARY KEY (mood_id, user_name)
 );
+
 CREATE TABLE users_habits (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    user_id INT NOT NULL,
     habit_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (habit_id) REFERENCES habits(id)
+    user_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_name) REFERENCES users(user_name),
+    FOREIGN KEY (habit_id) REFERENCES habits(id),
+    PRIMARY KEY (habit_id, user_name)
 );
 CREATE TABLE users_todos (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
     todo_id INT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (todo_id) REFERENCES todos(id)
+    FOREIGN KEY (user_name) REFERENCES users(user_name),
+    FOREIGN KEY (todo_id) REFERENCES todos(id),
+    PRIMARY KEY (todo_id, user_name)
 );
